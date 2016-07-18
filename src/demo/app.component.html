@@ -1,3 +1,7 @@
 <h1>
-  {{title}}
+  <date-time auto-save="true" [(ngModel)]="dt"></date-time>
+
+  <h1>Result</h1>
+  <p>{{ dt | date }}</p>
+  <button (click)="refresh()">Tesst</button>
 </h1>

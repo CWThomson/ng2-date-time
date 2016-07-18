@@ -8,6 +8,17 @@
 *//* Start Variable Declaration */
 /* End Variable Declaration */
 /* Start Main Styling */
+
+div {
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+  font-weight: normal;
+}
+
+input {
+  font-size:1.2rem;
+  font-weight:500;
+}
+
 .visuallyhidden {
   visibility: hidden;
 }
@@ -134,10 +145,10 @@
   cursor: pointer;
   padding: 0 0.6rem;
 }
-.time-date > .control > .slider > .switch-control > .icon:first-child {
+.time-date > .control > .slider > .switch-control > md-icon:first-child {
   margin-right: 1.4rem;
 }
-.time-date > .control > .slider > .switch-control > .icon:last-child {
+.time-date > .control > .slider > .switch-control > md-icon:last-child {
   margin-left: 1.4rem;
 }
 .time-date > .control > .slider > .date-control > .title {

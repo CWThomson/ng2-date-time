@@ -57,7 +57,7 @@
           <button md-button type="button" [ngClass]="calendar.class(31)" [hidden]="!calendar.isVisible(31)" [disabled]="calendar.isDisabled(31)" (click)="calendar.select(31)" aria-label="31" class="day-cell">31</button>
         </div>
       </div>
-      <button md-button type="button" (click)="modeSwitch()" [attr.aria-label]="modeSwitchText()" class="switch-control"><md-icon class="icon">access_time</md-icon><md-icon class="icon">date_range</md-icon><span class="visuallyhidden">{{modeSwitchText()}}</span></button>
+      <button md-button type="button" (click)="modeSwitch()" [attr.aria-label]="modeSwitchText()" class="switch-control"><md-icon class="icon">access_time</md-icon>&nbsp;<md-icon class="icon">date_range</md-icon><span class="visuallyhidden">{{modeSwitchText()}}</span></button>
       <div class="time-control">
         <div class="time-inputs">
           <input type="number" min="{{_hours24 ? 0 : 1}}" max="{{_hours24 ? 23 : 12}}" [(ngModel)]="clock._hours"/>
