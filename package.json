@@ -19,8 +19,8 @@
     "deploy": "firebase deploy",
     "webdriver-manager": "webdriver-manager"
   },
-  "version": "0.0.2",
-  "typings" : "./src/index.ts",
+  "version": "0.0.3",
+  "typings": "./src/index.ts",
   "license": "MIT",
   "main": "dist/index.js",
   "engines": {
