@@ -1,6 +1,6 @@
 import {Component, OnInit, Input, Output, EventEmitter, forwardRef, Provider} from '@angular/core';
 import {DatePipe, FORM_DIRECTIVES, ControlValueAccessor, NG_VALUE_ACCESSOR, CORE_DIRECTIVES} from '@angular/common';
-import {MdButton} from 'ng2-material/dist';
+import {MdButton} from '@angular2-material/button';
 import {MdIcon, MdIconRegistry} from '@angular2-material/icon';
 
 const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR = new Provider(
