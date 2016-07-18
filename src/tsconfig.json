@@ -19,6 +19,8 @@
   "files": [
     "main.ts",
     "typings.d.ts",
-    "src/date-time/index.ts"
+    "src/date-time/index.ts",
+    "date-time/date-time.component.ts",
+    "index.ts"
   ]
 }
