@@ -19,7 +19,7 @@
     "deploy": "firebase deploy",
     "webdriver-manager": "webdriver-manager"
   },
-  "version": "0.0.1",
+  "version": "0.0.2",
   "typings": "./index.d.ts",
   "license": "MIT",
   "engines": {
