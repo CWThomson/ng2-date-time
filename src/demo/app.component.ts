@@ -1,5 +1,5 @@
 import {Component} from '@angular/core';
-import {DateTimeComponent} from '../date-time';
+import {MaterialDateTimeComponent} from '../date-time';
 
 @Component({
     moduleId: module.id,
@@ -7,13 +7,15 @@ import {DateTimeComponent} from '../date-time';
     templateUrl: 'app.component.html',
     styleUrls: ['app.component.css'],
     directives: [
-        DateTimeComponent
+        MaterialDateTimeComponent
     ]
 })
 export class AppComponent {
     dt: Date = new Date();
 
-    refresh() {
-        console.log(this.dt);
-    }
+    mode: string = 'date';
+
+    defaultDate: Date = new Date(2016,1,1);
+    minDate: Date = new Date(2015,1,1);
+    maxDate: Date = new Date(2017,6,1);
 }

@@ -20,7 +20,7 @@ const packages: any = {
     // }
 };
 
-const materialPkgs:string[] = [
+const materialPkgs: string[] = [
     'core',
     'icon',
     'button',

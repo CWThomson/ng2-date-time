@@ -1,1 +1,1 @@
-export * from './date-time.component';
+export * from './material-date-time.component'

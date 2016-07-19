@@ -1,7 +1,24 @@
-<h1>
-  <date-time auto-save="true" [(ngModel)]="dt"></date-time>
+<div>
+    <h1>Bind to ngModel</h1>
+    <label>AutoSave? <input type="checkbox" [(ngModel)]="autosave"/></label>
+    <label>Vertical? <input type="checkbox" [(ngModel)]="vertical"/></label>
+    <label>Compact? <input type="checkbox" [(ngModel)]="compact"/></label>
+    <label>Use 24 Hour? <input type="checkbox" [(ngModel)]="hours24"/></label>
+    <select [(ngModel)]="mode">
+        <option value="full">Full</option>
+        <option value="date">Date</option>
+        <option value="time">Time</option>
+    </select>
 
-  <h1>Result</h1>
-  <p>{{ dt | date }}</p>
-  <button (click)="refresh()">Tesst</button>
-</h1>
+    <material-date-time [autosave]="autosave" [verticalMode]="vertical" [compact]="compact" [hours24]="hours24" [mode]="mode"
+               [defaultDate]="defaultDate" [(ngModel)]="dt" [minDate]="minDate" [maxDate]="maxDate"></material-date-time>
+    <div>Model: {{ dt }}</div>
+</div>
+
+
+<!--verticalMode: boolean;-->
+<!--@Input() compact: boolean;-->
+<!--@Input() hours24: boolean;-->
+<!--@Input() mode: string;-->
+<!--@Input() displayMode: string;-->
+<!--@Input() weekdays-->

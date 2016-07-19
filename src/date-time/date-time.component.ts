@@ -1,46 +1,41 @@
-import {Component, OnInit, Input, Output, EventEmitter, forwardRef, Provider} from '@angular/core';
-import {DatePipe, FORM_DIRECTIVES, ControlValueAccessor, NG_VALUE_ACCESSOR, CORE_DIRECTIVES} from '@angular/common';
-import {MdButton} from '@angular2-material/button';
-import {MdIcon, MdIconRegistry} from '@angular2-material/icon';
+import {OnInit, Input, Output, EventEmitter, forwardRef, Provider} from '@angular/core';
+import {DatePipe, ControlValueAccessor} from '@angular/common';
 
-const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR = new Provider(
-    NG_VALUE_ACCESSOR, {
-        useExisting: forwardRef(() => DateTimeComponent),
-        multi: true
-    });
-
-@Component({
-    moduleId: module.id,
-    selector: 'date-time',
-    templateUrl: 'date-time.component.html',
-    styleUrls: ['date-time.component.css'],
-    directives: [
-        MdButton,
-        MdIcon,
-        FORM_DIRECTIVES,
-        CORE_DIRECTIVES
-    ],
-    providers: [
-        MdIconRegistry,
-        CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR
-    ]
-})
+// @Component({
+//     moduleId: module.id,
+//     selector: 'date-time',
+//     templateUrl: 'date-time.component.html',
+//     styleUrls: ['date-time.component.css'],
+//     directives: [
+//         MdButton,
+//         MdIcon,
+//         FORM_DIRECTIVES,
+//         CORE_DIRECTIVES
+//     ],
+//     providers: [
+//         MdIconRegistry,
+//         CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR
+//     ]
+// })
 export class DateTimeComponent implements ControlValueAccessor, OnInit {
 
     // @Input('theme') theme: string;
-    @Input('auto-save') _autosave: boolean;
-    @Input() _verticalMode: boolean;
-    @Input() _compact: boolean;
-    @Input() _hours24: boolean;
-    @Input() _theme: string;
-    @Input() _mode: string;
-    @Input() _displayMode: string;
-    @Input() _weekdays: String[];
+    @Input() autosave: boolean;
+    @Input() verticalMode: boolean;
+    @Input() compact: boolean;
+    @Input() hours24: boolean;
+    @Input() defaultMode: string;
+    @Input() displayMode: string;
+    @Input() weekdays: String[];
+    @Input() defaultDate: Date;
+    @Input() minDate: Date;
+    @Input() maxDate: Date;
 
     @Output() onCancel: EventEmitter<any> = new EventEmitter<any>();
     @Output() onSave: EventEmitter<Date> = new EventEmitter<Date>();
 
     private _value: any = '';
+    private mode: string;
 
     _dateFilter: DatePipe = new DatePipe();
 
@@ -85,39 +80,39 @@ export class DateTimeComponent implements ControlValueAccessor, OnInit {
 
     display = {
         fullTitle: () => {
-            let _timeString = this._hours24 ? 'HH:mm' : 'h:mm a';
-            if (this._displayMode === 'full' && !this._verticalMode) {
+            let _timeString = this.hours24 ? 'HH:mm' : 'h:mm a';
+            if (this.displayMode === 'full' && !this.verticalMode) {
                 return this._dateFilter.transform(this.date, 'EEEE d MMMM yyyy, ' + _timeString);
-            } else if (this._displayMode === 'time') {
+            } else if (this.displayMode === 'time') {
                 return this._dateFilter.transform(this.date, _timeString);
-            } else if (this._displayMode === 'date') {
+            } else if (this.displayMode === 'date') {
                 return this._dateFilter.transform(this.date, 'EEE d MMM yyyy');
             } else {
                 return this._dateFilter.transform(this.date, 'd MMM yyyy, ' + _timeString);
             }
         },
         title: () => {
-            if (this._mode === 'date') {
-                return this._dateFilter.transform(this.date, (this._displayMode === 'date' ? 'EEEE' : 'EEEE ' +
-                (this._hours24 ? 'HH:mm' : 'h:mm a')));
+            if (this.mode === 'date') {
+                return this._dateFilter.transform(this.date, (this.displayMode === 'date' ? 'EEEE' : 'EEEE ' +
+                (this.hours24 ? 'HH:mm' : 'h:mm a')));
             } else {
                 return this._dateFilter.transform(this.date, 'MMMM d yyyy');
             }
         },
         'super': () => {
-            if (this._mode === 'date') {
+            if (this.mode === 'date') {
                 return this._dateFilter.transform(this.date, 'MMM');
             } else {
                 return '';
             }
         },
         main: () => {
-            return this._mode === 'date' ? this._dateFilter.transform(this.date, 'd') : this._hours24 ?
+            return this.mode === 'date' ? this._dateFilter.transform(this.date, 'd') : this.hours24 ?
                 this._dateFilter.transform(this.date, 'HH:mm') : (this._dateFilter.transform(this.date, 'h:mm')) +
-                '<small class="small">' + (this._dateFilter.transform(this.date, 'a')) + '</small>';
+            '<small class="small">' + (this._dateFilter.transform(this.date, 'a')) + '</small>';
         },
         sub: () => {
-            if (this._mode === 'date') {
+            if (this.mode === 'date') {
                 return this._dateFilter.transform(this.date, 'yyyy');
             } else {
                 return this._dateFilter.transform(this.date, 'HH:mm');
@@ -152,27 +147,23 @@ export class DateTimeComponent implements ControlValueAccessor, OnInit {
             // console.log(new Date(this.calendar._year, this.calendar._month, d).getMonth().constructor);
             // console.log(this.calendar._month.constructor);
             let visible = new Date(this.calendar._year, this.calendar._month, d).getMonth() === this.calendar._month;
+            console.log(visible + ' - ' + d);
             return visible;
         },
         isDisabled: (d) => {
-            let currentDate, maxdate, mindate;
-            currentDate = new Date(this.calendar._year, this.calendar._month, d);
-            mindate = this.restrictions.mindate;
-            maxdate = this.restrictions.maxdate;
-            return ((mindate != null) && currentDate < mindate) || ((maxdate != null) && currentDate > maxdate);
+            let currentDate = new Date(this.calendar._year, this.calendar._month, d);
+            return ((this.minDate != null) && currentDate < this.minDate) || ((this.maxDate != null) && currentDate > this.maxDate);
         },
         isPrevMonthButtonHidden: () => {
-            let date = this.restrictions['mindate'];
-            return (date != null) && this.calendar._month <= date.getMonth() && this.calendar._year <= date.getFullYear();
+            return (this.minDate != null) && this.calendar._month <= this.minDate.getMonth() && this.calendar._year <= this.minDate.getFullYear();
         },
         isNextMonthButtonHidden: () => {
-            let date = this.restrictions['maxdate'];
-            return (date != null) && this.calendar._month >= date.getMonth() && this.calendar._year >= date.getFullYear();
+            return (this.maxDate != null) && this.calendar._month >= this.maxDate.getMonth() && this.calendar._year >= this.maxDate.getFullYear();
         },
         'class': (d) => {
             let classString = '';
             if ((this.date != null) && new Date(this.calendar._year, this.calendar._month, d).getTime() ===
-                    new Date(this.date.getTime()).setHours(0, 0, 0, 0)) {
+                new Date(this.date.getTime()).setHours(0, 0, 0, 0)) {
                 classString += 'selected';
             }
             if (new Date(this.calendar._year, this.calendar._month, d).getTime() === new Date().setHours(0, 0, 0, 0)) {
@@ -187,22 +178,20 @@ export class DateTimeComponent implements ControlValueAccessor, OnInit {
         monthChange: (save?) => {
             this.calendar._month = Number(this.calendar._month);
             console.log(this.calendar._year.constructor);
-            let maxdate, mindate;
+            // let maxdate, mindate;
             if (save == null) {
                 save = true;
             }
             if ((this.calendar._year == null) || isNaN(this.calendar._year)) {
                 this.calendar._year = new Date().getFullYear();
             }
-            mindate = this.restrictions.mindate;
-            maxdate = this.restrictions.maxdate;
-            if ((mindate != null) && mindate.getFullYear() === this.calendar._year && mindate.getMonth() >=
-                    this.calendar._month) {
-                this.calendar._month = Math.max(mindate.getMonth(), this.calendar._month);
+            if ((this.minDate != null) && this.minDate.getFullYear() === this.calendar._year && this.minDate.getMonth() >=
+                this.calendar._month) {
+                this.calendar._month = Math.max(this.minDate.getMonth(), this.calendar._month);
             }
-            if ((maxdate != null) && maxdate.getFullYear() === this.calendar._year && maxdate.getMonth() <=
-                    this.calendar._month) {
-                this.calendar._month = Math.min(maxdate.getMonth(), this.calendar._month);
+            if ((this.maxDate != null) && this.maxDate.getFullYear() === this.calendar._year && this.maxDate.getMonth() <=
+                this.calendar._month) {
+                this.calendar._month = Math.min(this.maxDate.getMonth(), this.calendar._month);
             }
 
             this.date.setFullYear(this.calendar._year, this.calendar._month);
@@ -210,19 +199,19 @@ export class DateTimeComponent implements ControlValueAccessor, OnInit {
             if (this.date.getMonth() !== this.calendar._month) {
                 this.date.setDate(0);
             }
-            if ((mindate != null) && this.date < mindate) {
-                this.date.setDate(mindate.getTime());
-                this.calendar.select(mindate.getDate());
+            if ((this.minDate != null) && this.date < this.minDate) {
+                this.date.setDate(this.minDate.getTime());
+                this.calendar.select(this.minDate.getDate());
             }
-            if ((maxdate != null) && this.date > maxdate) {
-                this.date.setDate(maxdate.getTime());
-                this.calendar.select(maxdate.getDate());
+            if ((this.maxDate != null) && this.date > this.maxDate) {
+                this.date.setDate(this.maxDate.getTime());
+                this.calendar.select(this.maxDate.getDate());
             }
             if (save) {
                 return this.saveUpdateDate();
             }
         },
-        _incMonth: (months) => {
+        incMonth: (months) => {
             this.calendar._month += months;
             while (this.calendar._month < 0 || this.calendar._month > 11) {
                 if (this.calendar._month < 0) {
@@ -236,17 +225,15 @@ export class DateTimeComponent implements ControlValueAccessor, OnInit {
             return this.calendar.monthChange();
         },
         yearChange: (save) => {
-            let len, maxdate, mindate;
+            let len; //, maxdate, mindate;
             if (save == null) {
                 save = true;
             }
             if ((this.calendar._year == null) || this.calendar._year === 0) {
                 return;
             }
-            mindate = this.restrictions.mindate;
-            maxdate = this.restrictions.maxdate;
-            let i = (mindate != null) && mindate.getFullYear() === this.calendar._year ? mindate.getMonth() : 0;
-            len = (maxdate != null) && maxdate.getFullYear() === this.calendar._year ? maxdate.getMonth() : 11;
+            let i = (this.minDate != null) && this.minDate.getFullYear() === this.calendar._year ? this.minDate.getMonth() : 0;
+            len = (this.maxDate != null) && this.maxDate.getFullYear() === this.calendar._year ? this.maxDate.getMonth() : 11;
             this.calendar._months = this.calendar._allMonths.slice(i, len + 1);
             return this.calendar.monthChange(save);
         }
@@ -255,15 +242,15 @@ export class DateTimeComponent implements ControlValueAccessor, OnInit {
     clock = {
         _minutes: 0,
         _hours: 0,
-        _incHours: (inc) => {
-            this.clock._hours = this._hours24 ? Math.max(0, Math.min(23, this.clock._hours + inc)) :
+        incHours: (inc) => {
+            this.clock._hours = this.hours24 ? Math.max(0, Math.min(23, this.clock._hours + inc)) :
                 Math.max(1, Math.min(12, this.clock._hours + inc));
             if (isNaN(this.clock._hours)) {
                 this.clock._hours = 0;
             }
 
             let val = this.clock._hours;
-            if (!this._hours24) {
+            if (!this.hours24) {
                 if (val === 24) {
                     val = 12;
                 } else if (val === 12) {
@@ -278,7 +265,7 @@ export class DateTimeComponent implements ControlValueAccessor, OnInit {
                 return this.saveUpdateDate();
             }
         },
-        _incMinutes: (inc) => {
+        incMinutes: (inc) => {
             this.clock._minutes = Math.max(0, Math.min(59, this.clock._minutes + inc));
             if (isNaN(this.clock._minutes)) {
                 this.clock._minutes = 0;
@@ -305,14 +292,7 @@ export class DateTimeComponent implements ControlValueAccessor, OnInit {
         }
     };
 
-    // i;
-    _defaultDate = this.scDateTimeConfig.defaultDate;
-
     translations = this.scDateTimeI18n;
-    restrictions = {
-        mindate: void 0,
-        maxdate: void 0
-    };
 
     date: Date;
 
@@ -320,22 +300,22 @@ export class DateTimeComponent implements ControlValueAccessor, OnInit {
     }
 
     ngOnInit() {
-        this._weekdays = this._weekdays || this.scDateTimeI18n.weekdays;
+        this.weekdays = this.weekdays || this.scDateTimeI18n.weekdays;
         // this.theme = this.theme || this.scDateTimeConfig.defaultTheme;
-        this._autosave = this._autosave || this.scDateTimeConfig.autosave;
-        this._mode = this._mode || this.scDateTimeConfig.defaultMode;
-        // this.defaultDate = this.defaultDate || this.scDateTimeConfig.defaultDate;
-        this._displayMode = this._displayMode || this.scDateTimeConfig.displayMode;
-        this._verticalMode = this._verticalMode || this.scDateTimeConfig.defaultOrientation;
-        this._hours24 = this._hours24 || this.scDateTimeConfig.displayTwentyfour;
-        // this.compact = this.compact || this.scDateTimeConfig.compact;
-        // this.minDate = this.minDate || this.scDateTimeConfig;
-        // this.maxDate = this.maxDate || this.scDateTimeConfig.compact;
+        this.autosave = this.autosave || this.scDateTimeConfig.autosave;
+        this.mode = this.defaultMode || this.scDateTimeConfig.defaultMode;
+        this.displayMode = this.displayMode || this.scDateTimeConfig.displayMode;
+        this.verticalMode = this.verticalMode || this.scDateTimeConfig.defaultOrientation;
+        this.hours24 = this.hours24 || this.scDateTimeConfig.displayTwentyfour;
+        this.compact = this.compact || this.scDateTimeConfig.compact;
+        this.minDate = this.minDate || void 0;
+        this.maxDate = this.maxDate || void 0;
 
-        this.setDate();
+        this.setDate(this.defaultDate || this.scDateTimeConfig.defaultDate);
     }
 
     setDate = (newVal?, save?) => {
+        console.log(newVal);
         if (save == null) {
             save = true;
         }
@@ -344,8 +324,8 @@ export class DateTimeComponent implements ControlValueAccessor, OnInit {
         this.calendar._year = this.date.getFullYear();
         this.calendar._month = this.date.getMonth();
         this.clock._minutes = this.date.getMinutes();
-        this.clock._hours = this._hours24 ? this.date.getHours() : this.date.getHours() % 12;
-        if (!this._hours24 && this.clock._hours === 0) {
+        this.clock._hours = this.hours24 ? this.date.getHours() : this.date.getHours() % 12;
+        if (!this.hours24 && this.clock._hours === 0) {
             this.clock._hours = 12;
         }
         return this.calendar.yearChange(save);
@@ -365,27 +345,28 @@ export class DateTimeComponent implements ControlValueAccessor, OnInit {
     }
 
     modeClass = () => {
-        if (this._displayMode != null) {
-            this._mode = this._displayMode;
+        if (this.displayMode != null) {
+            this.mode = this.displayMode;
         }
-        return '' + (this._verticalMode ? 'vertical ' : '') + (this._displayMode === 'full' ? 'full-mode' :
-                this._displayMode === 'time' ? 'time-only' : this._displayMode === 'date' ? 'date-only' : this._mode === 'date'
-                    ? 'date-mode' : 'time-mode') + ' ' + (this._compact ? 'compact' : '');
+        return '' + (this.verticalMode ? 'vertical ' : '') + (this.displayMode === 'full' ? 'full-mode' :
+                this.displayMode === 'time' ? 'time-only' : this.displayMode === 'date' ? 'date-only' : this.mode === 'date'
+                    ? 'date-mode' : 'time-mode') + ' ' + (this.compact ? 'compact' : '');
     };
 
     modeSwitch = () => {
         let ref;
-        return this._mode = (ref = this._displayMode) != null ? ref : this._mode === 'date' ? 'time' : 'date';
+        return this.mode = (ref = this.displayMode) != null ? ref : this.mode === 'date' ? 'time' : 'date';
     };
 
     saveUpdateDate = () => {
-        if (this._autosave) {
+        if (this.autosave) {
             this.value = this.date;
         }
     }
 
     modeSwitchText = () => {
-        let switchTo = this.scDateTimeI18n.switchTo + ' ' + (this._mode === 'date' ? this.scDateTimeI18n.clock : this.scDateTimeI18n.calendar);
+        let switchTo = this.scDateTimeI18n.switchTo + ' ' + (this.mode === 'date' ? this.scDateTimeI18n.clock :
+                this.scDateTimeI18n.calendar);
         return switchTo;
     };
 
@@ -409,109 +390,3 @@ export class DateTimeComponent implements ControlValueAccessor, OnInit {
     }
 
 }
-
-
-// angular.module('scDateTime', []).value().directive('timeDatePicker', [
-//   '$filter', '$sce', '$rootScope', '$parse', 'scDateTimeI18n', 'scDateTimeConfig', function($filter, $sce,
-// $rootScope, $parse, scDateTimeI18n, scDateTimeConfig) {
-//     var _dateFilter;
-//     _dateFilter = $filter('date');
-//     return {
-//       restrict: 'AE',
-//       replace: true,
-//       scope: {
-//         _weekdays: '=?tdWeekdays'
-//       },
-//       require: 'ngModel',
-//       templateUrl: function(tElement, tAttrs) {
-//         if ((tAttrs.theme == null) || tAttrs.theme === '') {
-//           tAttrs.theme = scDateTimeConfig.defaultTheme;
-//         }
-//         if (tAttrs.theme.indexOf('/') <= 0) {
-//           return "scDateTime-" + tAttrs.theme + ".tpl";
-//         } else {
-//           return tAttrs.theme;
-//         }
-//       },
-//       link: function(scope, element, attrs, ngModel) {
-//         var cancelFn, saveFn;
-//         attrs.$observe('defaultMode', function(val) {
-//           if (val !== 'time' && val !== 'date') {
-//             val = scDateTimeConfig.defaultMode;
-//           }
-//           return mode = val;
-//         });
-//         attrs.$observe('defaultDate', function(val) {
-//           return _defaultDate = (val != null) && Date.parse(val) ? Date.parse(val) : scDateTimeConfig.defaultDate;
-//         });
-//         attrs.$observe('displayMode', function(val) {
-//           if (val !== 'full' && val !== 'time' && val !== 'date') {
-//             val = scDateTimeConfig.displayMode;
-//           }
-//           return displayMode = val;
-//         });
-//         attrs.$observe('orientation', function(val) {
-//           return verticalMode = val != null ? val === 'true' : scDateTimeConfig.defaultOrientation;
-//         });
-//         attrs.$observe('compact', function(val) {
-//           return _compact = val != null ? val === 'true' : scDateTimeConfig.compact;
-//         });
-//         attrs.$observe('displayTwentyfour', function(val) {
-//           return hours24 = val != null ? val : scDateTimeConfig.displayTwentyfour;
-//         });
-//         attrs.$observe('mindate', function(val) {
-//           if ((val != null) && Date.parse(val)) {
-//             restrictions.mindate = new Date(val);
-//             return restrictions.mindate.setHours(0, 0, 0, 0);
-//           }
-//         });
-//         attrs.$observe('maxdate', function(val) {
-//           if ((val != null) && Date.parse(val)) {
-//             restrictions.maxdate = new Date(val);
-//             return restrictions.maxdate.setHours(23, 59, 59, 999);
-//           }
-//         });
-//         _weekdays = _weekdays || scDateTimeI18n.weekdays;
-//         $watch('_weekdays', function(value) {
-//           if ((value == null) || !angular.isArray(value)) {
-//             return _weekdays = scDateTimeI18n.weekdays;
-//           }
-//         });
-//         ngModel.$render = function() {
-//           var ref;
-//           return setDate((ref = ngModel.$modelValue) != null ? ref : _defaultDate, ngModel.$modelValue != null);
-//         };
-//         angular.forEach(element.find('input'), function(input) {
-//           return angular.element(input).on('focus', function() {
-//             return setTimeout((function() {
-//               return input.select();
-//             }), 10);
-//           });
-//         });
-//         autosave = false;
-//         if ((attrs['autosave'] != null) || scDateTimeConfig.autosave) {
-//           saveUpdateDate = function() {
-//             return ngModel.$setViewValue(date);
-//           };
-//           return autosave = true;
-//         } else {
-//           saveFn = $parse(attrs.onSave);
-//           cancelFn = $parse(attrs.onCancel);
-//           saveUpdateDate = function() {
-//             return true;
-//           };
-//           save = function() {
-//             ngModel.$setViewValue(new Date(date));
-//             return saveFn($parent, {
-//               $value: new Date(date)
-//             });
-//           };
-//           return cancel = function() {
-//             cancelFn($parent, {});
-//             return ngModel.$render();
-//           };
-//         }
-//       }
-//     };
-//   }
-// ]);

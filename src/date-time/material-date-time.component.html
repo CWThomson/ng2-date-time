@@ -1,0 +1,82 @@
+<div [ngClass]="modeClass()" class="time-date">
+  <div (click)="modeSwitch()" aria-label="modeSwitchText()" class="display">
+    <div class="title">{{display.title()}}</div>
+    <div class="content">
+      <div class="super-title">{{display.super()}}</div>
+      <div [innerHTML]="display.main()" class="main-title"></div>
+      <div class="sub-title">{{display.sub()}}</div>
+    </div>
+  </div>
+  <div class="control">
+    <div class="full-title">{{display.fullTitle()}}</div>
+    <div class="slider">
+      <div class="date-control">
+        <div class="title">
+          <button md-button type="button" (click)="calendar.incMonth(-1)" [attr.aria-label]="translations.previousMonth" style="float: left;" [ngClass]="{'visuallyhidden': calendar.isPrevMonthButtonHidden()}"><md-icon>keyboard_arrow_left</md-icon></button>
+          <span class="month-part">{{ display.month() }}
+            <select [(ngModel)]="calendar._month" (ngModelChange)="calendar.monthChange()">
+              <option *ngFor="let month of calendar._months; let i = index" [value]="i">{{month}}</option>
+            </select></span>
+          <input [(ngModel)]="calendar._year" (change)="calendar.yearChange()" type="number" min="{{minDate ? minDate.getFullYear() : 0}}" max="{{maxDate ? maxDate.getFullYear() : NaN}}" class="year-part"/>
+          <button md-button type="button" (click)="calendar.incMonth(1)" [attr.aria-label]="translations.nextMonth" style="float: right;" [ngClass]="{'visuallyhidden': calendar.isNextMonthButtonHidden()}"><md-icon>keyboard_arrow_right</md-icon></button>
+        </div>
+        <div class="headers">
+          <div *ngFor="let day of _weekdays;trackBy:$index" class="day-cell">{{day}}</div>
+        </div>
+        <div class="days">
+          <button md-button type="button" [ngStyle]="{'margin-left': calendar.offsetMargin()}" [ngClass]="calendar.class(1)" [disabled]="calendar.isDisabled(1)" *ngIf="calendar.isVisible(1)" (click)="calendar.select(1)" aria-label="1" class="day-cell">1</button>
+          <button md-button type="button" [ngClass]="calendar.class(2)" *ngIf="calendar.isVisible(2)" [disabled]="calendar.isDisabled(2)" (click)="calendar.select(2)" aria-label="2" class="day-cell">2</button>
+          <button md-button type="button" [ngClass]="calendar.class(3)" *ngIf="calendar.isVisible(3)" [disabled]="calendar.isDisabled(3)" (click)="calendar.select(3)" aria-label="3" class="day-cell">3</button>
+          <button md-button type="button" [ngClass]="calendar.class(4)" *ngIf="calendar.isVisible(4)" [disabled]="calendar.isDisabled(4)" (click)="calendar.select(4)" aria-label="4" class="day-cell">4</button>
+          <button md-button type="button" [ngClass]="calendar.class(5)" *ngIf="calendar.isVisible(5)" [disabled]="calendar.isDisabled(5)" (click)="calendar.select(5)" aria-label="5" class="day-cell">5</button>
+          <button md-button type="button" [ngClass]="calendar.class(6)" *ngIf="calendar.isVisible(6)" [disabled]="calendar.isDisabled(6)" (click)="calendar.select(6)" aria-label="6" class="day-cell">6</button>
+          <button md-button type="button" [ngClass]="calendar.class(7)" *ngIf="calendar.isVisible(7)" [disabled]="calendar.isDisabled(7)" (click)="calendar.select(7)" aria-label="7" class="day-cell">7</button>
+          <button md-button type="button" [ngClass]="calendar.class(8)" *ngIf="calendar.isVisible(8)" [disabled]="calendar.isDisabled(8)" (click)="calendar.select(8)" aria-label="8" class="day-cell">8</button>
+          <button md-button type="button" [ngClass]="calendar.class(9)" *ngIf="calendar.isVisible(9)" [disabled]="calendar.isDisabled(9)" (click)="calendar.select(9)" aria-label="9" class="day-cell">9</button>
+          <button md-button type="button" [ngClass]="calendar.class(10)" *ngIf="calendar.isVisible(10)" [disabled]="calendar.isDisabled(10)" (click)="calendar.select(10)" aria-label="10" class="day-cell">10</button>
+          <button md-button type="button" [ngClass]="calendar.class(11)" *ngIf="calendar.isVisible(11)" [disabled]="calendar.isDisabled(11)" (click)="calendar.select(11)" aria-label="11" class="day-cell">11</button>
+          <button md-button type="button" [ngClass]="calendar.class(12)" *ngIf="calendar.isVisible(12)" [disabled]="calendar.isDisabled(12)" (click)="calendar.select(12)" aria-label="12" class="day-cell">12</button>
+          <button md-button type="button" [ngClass]="calendar.class(13)" *ngIf="calendar.isVisible(13)" [disabled]="calendar.isDisabled(13)" (click)="calendar.select(13)" aria-label="13" class="day-cell">13</button>
+          <button md-button type="button" [ngClass]="calendar.class(14)" *ngIf="calendar.isVisible(14)" [disabled]="calendar.isDisabled(14)" (click)="calendar.select(14)" aria-label="14" class="day-cell">14</button>
+          <button md-button type="button" [ngClass]="calendar.class(15)" *ngIf="calendar.isVisible(15)" [disabled]="calendar.isDisabled(15)" (click)="calendar.select(15)" aria-label="15" class="day-cell">15</button>
+          <button md-button type="button" [ngClass]="calendar.class(16)" *ngIf="calendar.isVisible(16)" [disabled]="calendar.isDisabled(16)" (click)="calendar.select(16)" aria-label="16" class="day-cell">16</button>
+          <button md-button type="button" [ngClass]="calendar.class(17)" *ngIf="calendar.isVisible(17)" [disabled]="calendar.isDisabled(17)" (click)="calendar.select(17)" aria-label="17" class="day-cell">17</button>
+          <button md-button type="button" [ngClass]="calendar.class(18)" *ngIf="calendar.isVisible(18)" [disabled]="calendar.isDisabled(18)" (click)="calendar.select(18)" aria-label="18" class="day-cell">18</button>
+          <button md-button type="button" [ngClass]="calendar.class(19)" *ngIf="calendar.isVisible(19)" [disabled]="calendar.isDisabled(19)" (click)="calendar.select(19)" aria-label="19" class="day-cell">19</button>
+          <button md-button type="button" [ngClass]="calendar.class(20)" *ngIf="calendar.isVisible(20)" [disabled]="calendar.isDisabled(20)" (click)="calendar.select(20)" aria-label="20" class="day-cell">20</button>
+          <button md-button type="button" [ngClass]="calendar.class(21)" *ngIf="calendar.isVisible(21)" [disabled]="calendar.isDisabled(21)" (click)="calendar.select(21)" aria-label="21" class="day-cell">21</button>
+          <button md-button type="button" [ngClass]="calendar.class(22)" *ngIf="calendar.isVisible(22)" [disabled]="calendar.isDisabled(22)" (click)="calendar.select(22)" aria-label="22" class="day-cell">22</button>
+          <button md-button type="button" [ngClass]="calendar.class(23)" *ngIf="calendar.isVisible(23)" [disabled]="calendar.isDisabled(23)" (click)="calendar.select(23)" aria-label="23" class="day-cell">23</button>
+          <button md-button type="button" [ngClass]="calendar.class(24)" *ngIf="calendar.isVisible(24)" [disabled]="calendar.isDisabled(24)" (click)="calendar.select(24)" aria-label="24" class="day-cell">24</button>
+          <button md-button type="button" [ngClass]="calendar.class(25)" *ngIf="calendar.isVisible(25)" [disabled]="calendar.isDisabled(25)" (click)="calendar.select(25)" aria-label="25" class="day-cell">25</button>
+          <button md-button type="button" [ngClass]="calendar.class(26)" *ngIf="calendar.isVisible(26)" [disabled]="calendar.isDisabled(26)" (click)="calendar.select(26)" aria-label="26" class="day-cell">26</button>
+          <button md-button type="button" [ngClass]="calendar.class(27)" *ngIf="calendar.isVisible(27)" [disabled]="calendar.isDisabled(27)" (click)="calendar.select(27)" aria-label="27" class="day-cell">27</button>
+          <button md-button type="button" [ngClass]="calendar.class(28)" *ngIf="calendar.isVisible(28)" [disabled]="calendar.isDisabled(28)" (click)="calendar.select(28)" aria-label="28" class="day-cell">28</button>
+          <button md-button type="button" [ngClass]="calendar.class(29)" *ngIf="calendar.isVisible(29)" [disabled]="calendar.isDisabled(29)" (click)="calendar.select(29)" aria-label="29" class="day-cell">29</button>
+          <button md-button type="button" [ngClass]="calendar.class(30)" *ngIf="calendar.isVisible(30)" [disabled]="calendar.isDisabled(30)" (click)="calendar.select(30)" aria-label="30" class="day-cell">30</button>
+          <button md-button type="button" [ngClass]="calendar.class(31)" *ngIf="calendar.isVisible(31)" [disabled]="calendar.isDisabled(31)" (click)="calendar.select(31)" aria-label="31" class="day-cell">31</button>
+        </div>
+      </div>
+      <button md-button [disabled]="mode !== 'full'" type="button" (click)="modeSwitch()" [attr.aria-label]="modeSwitchText()" class="switch-control"><md-icon class="icon">access_time</md-icon>&nbsp;<md-icon class="icon">date_range</md-icon><span class="visuallyhidden">{{modeSwitchText()}}</span></button>
+      <div class="time-control">
+        <div class="time-inputs">
+          <input type="number" min="{{hours24 ? 0 : 1}}" max="{{hours24 ? 23 : 12}}" [(ngModel)]="clock._hours"/>
+          <button md-button type="button" (click)="clock.incHours(1)" [attr.aria-label]="translations.incrementHours" class="hours up"><md-icon>keyboard_arrow_up</md-icon></button>
+          <button md-button type="button" (click)="clock.incHours(-1)" [attr.aria-label]="translations.decrementHours" class="hours down"><md-icon>keyboard_arrow_down</md-icon></button>
+          <input type="number" min="0" max="59" [(ngModel)]="clock._minutes"/>
+          <button md-button type="button" (click)="clock.incMinutes(1)" [attr.aria-label]="translations.incrementMinutes" class="minutes up"><md-icon>keyboard_arrow_up</md-icon></button>
+          <button md-button type="button" (click)="clock.incMinutes(-1)" [attr.aria-label]="translations.decrementMinutes" class="minutes down"><md-icon>keyboard_arrow_down</md-icon></button>
+        </div>
+        <div *ngIf="!hours24" class="buttons">
+          <button md-button type="button" (click)="clock.setAM()" [attr.aria-label]="translations.switchAmPm">{{ display.amPm() }}</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="buttons">
+    <button md-button type="button" (click)="setNow()" [attr.aria-label]="translations.now">{{translations.now}}</button>
+    <button md-button type="button" (click)="cancel()" *ngIf="!autosave" [attr.aria-label]="translations.cancel">{{translations.cancel}}</button>
+    <button md-button type="button" (click)="save()" *ngIf="!autosave" [attr.aria-label]="translations.save">{{translations.save}}</button>
+
+  </div>
+</div>
