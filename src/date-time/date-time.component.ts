@@ -144,10 +144,7 @@ export class DateTimeComponent implements ControlValueAccessor, OnInit {
             return margin;
         },
         isVisible: (d) => {
-            // console.log(new Date(this.calendar._year, this.calendar._month, d).getMonth().constructor);
-            // console.log(this.calendar._month.constructor);
             let visible = new Date(this.calendar._year, this.calendar._month, d).getMonth() === this.calendar._month;
-            console.log(visible + ' - ' + d);
             return visible;
         },
         isDisabled: (d) => {

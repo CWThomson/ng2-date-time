@@ -19,7 +19,7 @@
   "files": [
     "main.ts",
     "typings.d.ts",
-    "src/date-time/date-time.component.ts",
+    "src/date-time/material-date-time.component.ts",
     "index.ts"
   ]
 }
