@@ -308,11 +308,10 @@ export class DateTimeComponent implements ControlValueAccessor, OnInit {
         this.minDate = this.minDate || void 0;
         this.maxDate = this.maxDate || void 0;
 
-        this.setDate(this.defaultDate || this.scDateTimeConfig.defaultDate);
+        this.setDate(this._value || this.defaultDate || this.scDateTimeConfig.defaultDate);
     }
 
     setDate = (newVal?, save?) => {
-        console.log(newVal);
         if (save == null) {
             save = true;
         }
@@ -370,7 +369,8 @@ export class DateTimeComponent implements ControlValueAccessor, OnInit {
 
     writeValue(value: any) {
         this._value = value;
-        // this.onChange(value);
+        this.setDate(value,false);
+        this.onChange(value);
     }
 
     onChange = (_) => {
