@@ -17,7 +17,11 @@ const packages: any = {
     // 'ng2-date-time': {
     //   defaultExtension: 'js',
     //   main: 'index.js'
-    // }
+    // },
+    '@angular/forms': {
+        defaultExtension: 'js',
+        main: 'index.js'
+    }
 };
 
 const materialPkgs: string[] = [

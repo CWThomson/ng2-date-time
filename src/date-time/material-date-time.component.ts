@@ -1,7 +1,8 @@
 import {Component, forwardRef, Provider} from '@angular/core';
-import {FORM_DIRECTIVES, CORE_DIRECTIVES, NG_VALUE_ACCESSOR} from '@angular/common';
+import {FORM_DIRECTIVES, CORE_DIRECTIVES} from '@angular/common';
 import {MdButton} from '@angular2-material/button';
 import {MdIcon, MdIconRegistry} from '@angular2-material/icon';
+import {NG_VALUE_ACCESSOR} from '@angular/forms';
 
 import {DateTimeComponent} from './date-time.component';
 
