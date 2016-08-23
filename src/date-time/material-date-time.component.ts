@@ -27,6 +27,8 @@ const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR = new Provider(
         MdIconRegistry,
         CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR
     ]
+    inputs: ['autosave','verticalMode','defaultDate', 'hours24','minDate','maxDate','mode'],
+    outputs: ['onSave','onCancel']
 })
 export class MaterialDateTimeComponent extends DateTimeComponent {
 
